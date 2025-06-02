@@ -1,102 +1,114 @@
-import Image from "next/image";
+"use client";
+import React, { useReducer } from "react";
+import ProductList from "./components/ProductList";
+import { initialState } from "./reducers/ReducerCart";
+import { reducer } from "./reducers/ReducerCart";
+import Cart from "./components/Cart";
+import { CartItemProps } from "./reducers/ReducerCart";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+  const addItem = (item: CartItemProps) => {
+    dispatch({ type: "ADD_ITEM", payload: item });
+  };
+
+  const removeItem = (item: CartItemProps) => {
+    dispatch({ type: "REMOVE_ITEM", payload: item.id });
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* 🔝 NAVBAR */}
+      <nav className="bg-white border-gray-200 dark:bg-gray-900 shadow-sm">
+        <div className="max-w-screen-xl mx-auto p-4 flex flex-wrap items-center justify-between">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#"
+            className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <img
+              src="https://flowbite.com/docs/images/logo.svg"
+              className="h-8"
+              alt="Logo"
             />
-            Deploy now
+            <span className="text-2xl font-semibold whitespace-nowrap dark:text-white">
+              MyShop
+            </span>
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <button
+            data-collapse-toggle="navbar-default"
+            type="button"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+            aria-controls="navbar-default"
+            aria-expanded="false"
           >
-            Read our docs
-          </a>
+            <span className="sr-only">Open main menu</span>
+            <svg
+              className="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
+
+          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+            <ul className="flex flex-col md:flex-row md:space-x-8 text-sm font-medium mt-4 md:mt-0">
+              <li>
+                <a href="#" className="text-blue-700 dark:text-white">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-900 dark:text-white">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-900 dark:text-white">
+                  Services
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-900 dark:text-white">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-900 dark:text-white">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      {/* 🔽 PAGE CONTENT AREA */}
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4">Welcome to MyShop</h1>
+        <p className="text-gray-700 dark:text-gray-300 mb-8">
+          Here youll find our amazing products.
+        </p>
+
+        {/* 🔲 Grid layout for the product list */}
+        <div className="grid grid-cols-5 gap-3">
+          <ProductList addItem={addItem} />
+          <Cart cart={state.cart} removeItem={removeItem}></Cart>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="bg-gray-100 dark:bg-gray-800 text-center py-4 text-sm text-gray-500">
+        &copy; 2025 MyShop. All rights reserved.
       </footer>
     </div>
   );
