@@ -7,6 +7,24 @@ import Cart from "./components/Cart";
 import { CartItemProps } from "./reducers/ReducerCart";
 
 export default function Home() {
+  const [totalPrice, setTotalPrice] = React.useState(0);
+
+  function handleTotalPrice(price: number, actionButton: string) {
+    switch (actionButton) {
+      case "add":
+        setTotalPrice((prev) => (prev += price));
+
+        break;
+      case "remove":
+        setTotalPrice((prev) => (prev -= price));
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const addItem = (item: CartItemProps) => {
@@ -102,8 +120,17 @@ export default function Home() {
 
         {/* 🔲 Grid layout for the product list */}
         <div className="grid grid-cols-5 gap-3">
-          <ProductList addItem={addItem} />
-          <Cart cart={state.cart} removeItem={removeItem}></Cart>
+          <ProductList
+            addItem={addItem}
+            handleTotalPrice={handleTotalPrice}
+            totalPrice={totalPrice}
+          />
+          <Cart
+            cart={state.cart}
+            removeItem={removeItem}
+            totalPrice={totalPrice}
+            setTotalPrice={setTotalPrice}
+          ></Cart>
         </div>
       </main>
 

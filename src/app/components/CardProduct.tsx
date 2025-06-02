@@ -6,6 +6,8 @@ import type { CartItemProps } from "../reducers/ReducerCart";
 interface ProductProps {
   product: Product;
   addItem: (item: CartItemProps) => void;
+  totalPrice: number;
+  handleTotalPrice: (item: number, actionButton: string) => void;
 }
 
 const SvgStarFill = () => {
@@ -35,7 +37,7 @@ const SvgStarEmpty = () => {
   );
 };
 
-const CardProduct = ({ product, addItem }: ProductProps) => {
+const CardProduct = ({ product, addItem, handleTotalPrice }: ProductProps) => {
   const stars = [];
   const rating = Math.floor(product.rating.rate);
 
@@ -79,15 +81,16 @@ const CardProduct = ({ product, addItem }: ProductProps) => {
           <a
             href="#"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={() =>
+            onClick={() => {
               addItem({
                 id: product.id,
                 title: product.title,
                 price: product.price,
                 quantity: 1,
                 image: product.image,
-              })
-            }
+              });
+              handleTotalPrice(product.price, "add");
+            }}
           >
             Add to cart
           </a>

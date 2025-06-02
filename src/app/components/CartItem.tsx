@@ -4,9 +4,11 @@ import type { CartItemProps } from "../reducers/ReducerCart";
 interface ProductProps {
   item: CartItemProps;
   removeItem: (item: CartItemProps) => void;
+  totalPrice: number;
+  setTotalPrice: (price: number, actionButton: string) => void;
 }
 
-const CartItem = ({ item, removeItem }: ProductProps) => {
+const CartItem = ({ item, removeItem, setTotalPrice }: ProductProps) => {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
       <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
@@ -120,7 +122,10 @@ const CartItem = ({ item, removeItem }: ProductProps) => {
             <button
               type="button"
               className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"
-              onClick={() => removeItem(item)}
+              onClick={() => {
+                removeItem(item);
+                setTotalPrice(item.price, "remove");
+              }}
             >
               <svg
                 className="me-1.5 h-5 w-5"

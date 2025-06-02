@@ -6,9 +6,15 @@ import { CartItemProps } from "../reducers/ReducerCart";
 
 interface ProductListProps {
   addItem: (item: CartItemProps) => void;
+  handleTotalPrice: (item: number, actionButton: string) => void;
+  totalPrice: number;
 }
 
-const ProductList = ({ addItem }: ProductListProps) => {
+const ProductList = ({
+  addItem,
+  handleTotalPrice,
+  totalPrice,
+}: ProductListProps) => {
   const [products, setProducts] = React.useState<Product[]>([]);
 
   useEffect(() => {
@@ -25,7 +31,13 @@ const ProductList = ({ addItem }: ProductListProps) => {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 col-span-3">
       {products.map((p) => {
         return (
-          <CardProduct key={p.id} product={p} addItem={addItem}></CardProduct>
+          <CardProduct
+            key={p.id}
+            product={p}
+            addItem={addItem}
+            totalPrice={totalPrice}
+            handleTotalPrice={handleTotalPrice}
+          ></CardProduct>
         );
       })}
     </div>

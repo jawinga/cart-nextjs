@@ -1,12 +1,20 @@
+import React from "react";
 import CartItem from "./CartItem";
 import { CartItemProps } from "../reducers/ReducerCart";
 
 interface CartItemListProps {
   cart: CartItemProps[];
   removeItem: (item: CartItemProps) => void;
+  totalPrice: number;
+  setTotalPrice: (price: number) => void;
 }
 
-const Cart = ({ cart, removeItem }: CartItemListProps) => {
+const Cart = ({
+  cart,
+  removeItem,
+  totalPrice,
+  setTotalPrice,
+}: CartItemListProps) => {
   return (
     <section className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
@@ -20,6 +28,8 @@ const Cart = ({ cart, removeItem }: CartItemListProps) => {
               key={item.id}
               removeItem={removeItem}
               item={item}
+              totalPrice={totalPrice}
+              setTotalPrice={setTotalPrice}
             ></CartItem>
           );
         })}
@@ -27,7 +37,7 @@ const Cart = ({ cart, removeItem }: CartItemListProps) => {
 
       <div className="mt-8 flex justify-between items-center">
         <p className="text-xl font-semibold text-gray-800 dark:text-white">
-          Total: $79.98
+          Total: ${totalPrice}
         </p>
         <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
           Checkout
