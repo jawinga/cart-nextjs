@@ -7,6 +7,8 @@ interface CartItemListProps {
   removeItem: (item: CartItemProps) => void;
   totalPrice: number;
   setTotalPrice: (price: number) => void;
+  incrementQuantity: (item: CartItemProps) => void;
+  decreaseQuantity: (item: CartItemProps) => void;
 }
 
 const Cart = ({
@@ -14,6 +16,8 @@ const Cart = ({
   removeItem,
   totalPrice,
   setTotalPrice,
+  incrementQuantity,
+  decreaseQuantity,
 }: CartItemListProps) => {
   const usingMemoItem = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -34,19 +38,30 @@ const Cart = ({
               item={item}
               totalPrice={totalPrice}
               setTotalPrice={setTotalPrice}
+              incrementQuantity={incrementQuantity}
+              decreaseQuantity={decreaseQuantity}
             ></CartItem>
           );
         })}
       </div>
 
-      <div className="mt-8 flex justify-between items-center">
-        <p className="text-xl font-semibold text-gray-800 dark:text-white">
-          Total: ${usingMemoItem}
-        </p>
-        <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
-          Checkout
-        </button>
-      </div>
+      {cart.length >= 1 && (
+        <div className="mt-8 flex justify-between items-center">
+          <p className="text-xl font-semibold text-gray-800 dark:text-white">
+            Total: ${usingMemoItem}
+          </p>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
+            Checkout
+          </button>
+        </div>
+      )}
+
+      {cart.length < 1 && (
+        <div className="flex flex-col items-center justify-center h-64 text-gray-500 border-2 border-dashed rounded-lg">
+          <p className="text-lg font-medium">Your basket is empty</p>
+          <p className="text-sm">Add items to get started</p>
+        </div>
+      )}
     </section>
   );
 };

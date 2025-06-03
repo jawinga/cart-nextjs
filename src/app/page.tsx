@@ -35,6 +35,13 @@ export default function Home() {
     dispatch({ type: "REMOVE_ITEM", payload: item.id });
   };
 
+  const increaseQuant = (item: CartItemProps) => {
+    dispatch({ type: "ADD_QUANTITY", payload: item });
+  };
+  const decreaseQuant = (item: CartItemProps) => {
+    dispatch({ type: "REMOVE_QUANTITY", payload: item });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* 🔝 NAVBAR */}
@@ -130,6 +137,8 @@ export default function Home() {
             removeItem={removeItem}
             totalPrice={totalPrice}
             setTotalPrice={setTotalPrice}
+            decreaseQuantity={decreaseQuant}
+            incrementQuantity={increaseQuant}
           ></Cart>
         </div>
       </main>

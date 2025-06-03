@@ -8,7 +8,9 @@ export interface CartItemProps {
 
 export type CartAction =
   | { type: "ADD_ITEM"; payload: CartItemProps }
-  | { type: "REMOVE_ITEM"; payload: number };
+  | { type: "REMOVE_ITEM"; payload: number }
+  | { type: "ADD_QUANTITY"; payload: CartItemProps }
+  | { type: "REMOVE_QUANTITY"; payload: CartItemProps };
 
 export const initialState = {
   cart: [],
@@ -79,35 +81,44 @@ export function reducer(state: CartState, action: CartAction) {
         return state;
       }
 
+    case "ADD_QUANTITY":
+      const foundItem = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
+      if (!foundItem) return state;
+
+      const updatedCart = state.cart.map((item) =>
+        item.id === action.payload.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+
+      return {
+        ...state,
+        cart: updatedCart,
+        totalQuantity: state.totalQuantity + 1,
+        totalPrice: state.totalPrice + foundItem.price,
+      };
+
+    case "REMOVE_QUANTITY": {
+      const itemToUpdate = state.cart.find(
+        (item) => item.id === action.payload.id
+      );
+      if (!itemToUpdate || itemToUpdate.quantity <= 1) return state;
+
+      return {
+        ...state,
+        cart: state.cart.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        ),
+        totalQuantity: state.totalQuantity - 1,
+        totalPrice: state.totalPrice - itemToUpdate.price,
+      };
+    }
+
     default:
-      throw new Error();
+      return state;
   }
-}
-
-{
-  /*import React from "react";
-import Cart from "../components/Cart";
-
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-}
-
-const initialState = {
-  cart: [],
-  totalQuantity: 0,
-  totalPrice: 0,
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "ADD_ITEM":
-      break;
-
-    case "REMOVE_ITEM":
-      break;
-  }
-}*/
 }
