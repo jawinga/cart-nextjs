@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import { Product } from "../models/Product";
+import type { Product } from "../models/Product";
 import type { CartItemProps } from "../reducers/ReducerCart";
 
 interface ProductProps {
@@ -13,7 +12,7 @@ interface ProductProps {
 const SvgStarFill = () => {
   return (
     <svg
-      className="w-4 h-4 text-yellow-300"
+      className="w-4 h-4 text-amber-400"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
@@ -23,10 +22,11 @@ const SvgStarFill = () => {
     </svg>
   );
 };
+
 const SvgStarEmpty = () => {
   return (
     <svg
-      className="w-4 h-4 text-gray-400"
+      className="w-4 h-4 text-slate-300 dark:text-slate-600"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
@@ -43,44 +43,62 @@ const CardProduct = ({ product, addItem, handleTotalPrice }: ProductProps) => {
 
   for (let index = 0; index < 5; index++) {
     if (index <= rating) {
-      {
-        stars.push(<SvgStarFill></SvgStarFill>);
-      }
+      stars.push(<SvgStarFill key={index} />);
     } else {
-      stars.push(<SvgStarEmpty></SvgStarEmpty>);
+      stars.push(<SvgStarEmpty key={index} />);
     }
   }
 
   return (
-    <div className="w-full max-w-sm h-150 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-      <a href="#">
+    <div className="group relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/40 hover:-translate-y-1 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:shadow-slate-900/20">
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-blue-900/20 dark:to-purple-900/10" />
+
+      {/* Product Image */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 p-8 dark:from-slate-700 dark:to-slate-800">
         <img
-          className="p-8 rounded-t-lg h-100 mx-auto rounded-lg"
-          src={product.image}
+          className="mx-auto h-48 w-full object-contain transition-transform duration-500 group-hover:scale-110"
+          src={product.image || "/placeholder.svg"}
           alt="product image"
         />
-      </a>
-      <div className="px-5 pb-5">
-        <a href="#">
-          <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+
+        {/* Floating badge */}
+        <div className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-slate-700 shadow-lg backdrop-blur-sm dark:bg-slate-800/90 dark:text-slate-300">
+          New
+        </div>
+      </div>
+
+      {/* Product Details */}
+      <div className="relative p-6 space-y-4">
+        <div>
+          <h5 className="line-clamp-2 text-lg font-semibold tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
             {product.title}
           </h5>
-        </a>
-        <div className="flex items-center mt-2.5 mb-5">
-          <div className="flex items-center space-x-1 rtl:space-x-reverse">
-            {stars}
-          </div>
-          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm dark:bg-blue-200 dark:text-blue-800 ms-3">
-            {product.rating.rate} ({product.rating.count})
-          </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-3xl font-bold text-gray-900 dark:text-white">
-            ${product.price}
-          </span>
-          <a
-            href="#"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+
+        {/* Rating */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-1">{stars}</div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+              {product.rating.rate}
+            </span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">
+              ({product.rating.count} reviews)
+            </span>
+          </div>
+        </div>
+
+        {/* Price and Add to Cart */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent dark:from-blue-400 dark:to-purple-400">
+              ${product.price}
+            </span>
+          </div>
+
+          <button
+            className="group/btn relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
             onClick={() => {
               addItem({
                 id: product.id,
@@ -92,8 +110,23 @@ const CardProduct = ({ product, addItem, handleTotalPrice }: ProductProps) => {
               handleTotalPrice(product.price, "add");
             }}
           >
-            Add to cart
-          </a>
+            <span className="relative z-10 flex items-center">
+              <svg
+                className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/btn:scale-110"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5"
+                />
+              </svg>
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
+          </button>
         </div>
       </div>
     </div>
