@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import CartItem from "./CartItem";
 import { CartItemProps } from "../reducers/ReducerCart";
 
@@ -15,6 +15,10 @@ const Cart = ({
   totalPrice,
   setTotalPrice,
 }: CartItemListProps) => {
+  const usingMemoItem = useMemo(() => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  }, [cart]);
+
   return (
     <section className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
@@ -37,7 +41,7 @@ const Cart = ({
 
       <div className="mt-8 flex justify-between items-center">
         <p className="text-xl font-semibold text-gray-800 dark:text-white">
-          Total: ${totalPrice}
+          Total: ${usingMemoItem}
         </p>
         <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
           Checkout
